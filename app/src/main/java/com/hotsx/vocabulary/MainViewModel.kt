@@ -4,12 +4,15 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import com.hotsx.api.Service
+import com.hotsx.app.log
 import com.hotsx.db.AppDatabase
 import kotlinx.coroutines.Dispatchers.Default
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import okhttp3.Callback
 import okhttp3.ResponseBody
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class MainViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -34,11 +37,20 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
             Service.translation
                     .translation(map)
                     .execute().body()?.let {
+                        log(it)
                         db.vocabularyDao().insertAll(it.sentences)
                     }
+            Service.audio.audio(text)
+                    .enqueue(object : Callback<ResponseBody> {
+                        override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
 
-//            Service.audio.audio(text)
-//                    .enqueue(object :Callback<ResponseBody>{})
+                        }
+
+                        override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+
+                        }
+
+                    })
         }
     }
 }
