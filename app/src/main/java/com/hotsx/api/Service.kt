@@ -1,5 +1,6 @@
 package com.hotsx.api
 
+import com.hotsx.retrofit.FileConverterFactory
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
@@ -12,9 +13,10 @@ object Service {
                 .build().create(Translation::class.java)
     }
 
-    val audio by lazy {
+    val audio: VocabularyAudio by lazy {
         Retrofit.Builder()
-                .baseUrl("http://dict.youdao.com/dictvoice/")
+                .baseUrl("http://dict.youdao.com")
+                .addConverterFactory(FileConverterFactory.create())
                 .build().create(VocabularyAudio::class.java)
     }
 }

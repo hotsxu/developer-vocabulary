@@ -2,13 +2,11 @@ package com.hotsx.api
 
 import okhttp3.ResponseBody
 import retrofit2.Call
-import retrofit2.http.Field
-import retrofit2.http.GET
-import retrofit2.http.Streaming
+import retrofit2.http.*
 
 interface VocabularyAudio {
 
-    @GET
     @Streaming
-    fun audio(@Field("audio") text: String): Call<ResponseBody>
+    @GET("/dictvoice")
+    fun audio(@Query("audio") text: String): Call<ResponseBody>
 }

@@ -13,7 +13,7 @@ configure<AppExtension> {
     buildToolsVersion("28.0.3")
     defaultConfig {
         applicationId = "com.hotsx.vocabulary"
-        minSdkVersion(23)
+        minSdkVersion(24)
         targetSdkVersion(28)
         versionCode = 1
         versionName = "1.0"
@@ -60,4 +60,6 @@ dependencies {
     implementation("com.google.code.gson:gson:2.8.5")
     /**Kotlin Coroutines*/
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.0.1")
+    /**EasyPermissions*/
+    implementation("pub.devrel:easypermissions:2.0.0")
 }

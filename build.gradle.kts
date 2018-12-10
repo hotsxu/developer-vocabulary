@@ -1,3 +1,5 @@
+import java.net.URI
+
 buildscript {
     val kotlinVersion = "1.3.10"
     repositories {

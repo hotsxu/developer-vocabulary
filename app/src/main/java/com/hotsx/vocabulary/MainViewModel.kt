@@ -1,18 +1,28 @@
 package com.hotsx.vocabulary
 
+import android.Manifest
+import android.app.Activity
 import android.app.Application
+import android.os.Environment
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import com.hotsx.api.Service
 import com.hotsx.app.log
 import com.hotsx.db.AppDatabase
 import kotlinx.coroutines.Dispatchers.Default
+import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import okhttp3.ResponseBody
+import pub.devrel.easypermissions.EasyPermissions
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import saveAudio
+import java.io.File
+import java.io.FileOutputStream
 
 class MainViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -33,24 +43,27 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                 "dt" to "t",
                 "sl" to "en",
                 "q" to text)
-        GlobalScope.launch(Default) {
-            Service.translation
-                    .translation(map)
-                    .execute().body()?.let {
-                        log(it)
-                        db.vocabularyDao().insertAll(it.sentences)
-                    }
-            Service.audio.audio(text)
-                    .enqueue(object : Callback<ResponseBody> {
-                        override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
-
+        GlobalScope.launch(Main) {
+            withContext(Default) {
+                Service.translation
+                        .translation(map)
+                        .execute().body()
+                        ?.let {
+                            log(it)
+                            db.vocabularyDao()
+                                    .insertAll(it.sentences)
                         }
-
-                        override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-
+            }
+            withContext(Default) {
+                Service.audio
+                        .audio(text)
+                        .execute().body()
+                        ?.let {
+                            saveAudio(it, text)
                         }
-
-                    })
+            }
         }
     }
+
+
 }
